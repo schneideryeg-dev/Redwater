@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Municipal systems &amp; integration landscape</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#16232E;
+    --ink-soft:#3E4C58;
+    --paper:#F7F6F1;
+    --panel:#FFFFFF;
+    --line:#DEDACE;
+    --line-strong:#C7C2B3;
+    --gold:#B4842B;
+    --gold-100:#F3E7CF;
+    --teal:#2E7D6B;
+    --teal-100:#DCEBE6;
+    --rust:#A5433B;
+    --rust-100:#F3E0DD;
+    --slate:#767F88;
+    --slate-100:#E7E8E6;
+    --infra:#9AA0A6;
+    --infra-100:#EDEDEC;
+    --radius:10px;
+    --shadow:0 2px 10px rgba(22,35,46,0.06);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'IBM Plex Sans', sans-serif;
+    line-height:1.55;
+  }
+  h1,h2,h3{
+    font-family:'Source Serif 4', serif;
+    font-weight:600;
+    margin:0;
+    color:var(--ink);
+  }
+  .mono{font-family:'IBM Plex Mono', monospace;}
+
+  /* header */
+  header{
+    position:sticky;
+    top:0;
+    z-index:20;
+    background:var(--paper);
+    border-bottom:1px solid var(--line);
+    padding:28px 32px 18px;
+  }
+  .header-inner{max-width:1120px;margin:0 auto;}
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--gold);
+    margin-bottom:6px;
+  }
+  h1{font-size:26px;}
+  .subtitle{color:var(--ink-soft);font-size:14.5px;margin-top:6px;max-width:640px;}
+
+  /* status gauge */
+  .gauge-wrap{margin-top:20px;}
+  .gauge{
+    display:flex;
+    height:34px;
+    border-radius:8px;
+    overflow:hidden;
+    border:1px solid var(--line-strong);
+  }
+  .gauge-seg{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    color:#fff;
+    transition:opacity .15s ease;
+    min-width:0;
+  }
+  .gauge-seg span{padding:0 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .gauge-seg.dim{opacity:0.35;}
+  .gauge-seg.connected{background:var(--teal);}
+  .gauge-seg.manual{background:var(--gold);}
+  .gauge-seg.isolated{background:var(--rust);}
+  .gauge-seg.undocumented{background:var(--slate);}
+  .gauge-seg.infra{background:var(--infra);}
+
+  .legend{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px 18px;
+    margin-top:12px;
+  }
+  .legend-item{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    font-size:12.5px;
+    color:var(--ink-soft);
+    cursor:pointer;
+    user-select:none;
+  }
+  .legend-item.off{opacity:0.4;}
+  .dot{width:9px;height:9px;border-radius:50%;flex:none;}
+  .dot.connected{background:var(--teal);}
+  .dot.manual{background:var(--gold);}
+  .dot.isolated{background:var(--rust);}
+  .dot.undocumented{background:var(--slate);}
+  .dot.infra{background:var(--infra);}
+
+  /* main */
+  main{max-width:1120px;margin:0 auto;padding:30px 32px 90px;}
+  .category{margin-bottom:38px;}
+  .category-head{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    border-bottom:1px solid var(--line-strong);
+    padding-bottom:8px;
+    margin-bottom:16px;
+  }
+  .category-head h2{font-size:18px;}
+  .category-count{font-family:'IBM Plex Mono', monospace;font-size:12px;color:var(--slate);}
+
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(230px, 1fr));
+    gap:12px;
+  }
+  .card{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-left:3px solid var(--slate);
+    border-radius:var(--radius);
+    padding:14px 16px;
+    cursor:pointer;
+    box-shadow:var(--shadow);
+    transition:transform .12s ease, border-color .12s ease;
+    text-align:left;
+  }
+  .card:hover{transform:translateY(-2px);border-color:var(--line-strong);}
+  .card.connected{border-left-color:var(--teal);}
+  .card.manual{border-left-color:var(--gold);}
+  .card.isolated{border-left-color:var(--rust);}
+  .card.undocumented{border-left-color:var(--slate);}
+  .card.infra{border-left-color:var(--infra);}
+  .card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;}
+  .card-name{font-family:'Source Serif 4', serif;font-weight:600;font-size:15px;}
+  .pill{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10px;
+    letter-spacing:0.03em;
+    text-transform:uppercase;
+    padding:3px 7px;
+    border-radius:20px;
+    flex:none;
+    white-space:nowrap;
+  }
+  .pill.connected{background:var(--teal-100);color:var(--teal);}
+  .pill.manual{background:var(--gold-100);color:var(--gold);}
+  .pill.isolated{background:var(--rust-100);color:var(--rust);}
+  .pill.undocumented{background:var(--slate-100);color:var(--slate);}
+  .pill.infra{background:var(--infra-100);color:#5B6067;}
+  .card-teaser{font-size:12.5px;color:var(--ink-soft);margin-top:8px;}
+  .card-external{font-size:10.5px;color:var(--slate);margin-top:8px;font-family:'IBM Plex Mono', monospace;}
+
+  /* drawer */
+  .backdrop{
+    position:fixed;inset:0;
+    background:rgba(22,35,46,0.32);
+    opacity:0;pointer-events:none;
+    transition:opacity .2s ease;
+    z-index:30;
+  }
+  .backdrop.open{opacity:1;pointer-events:auto;}
+  .drawer{
+    position:fixed;top:0;right:0;bottom:0;
+    width:420px;max-width:92vw;
+    background:var(--panel);
+    box-shadow:-8px 0 30px rgba(22,35,46,0.15);
+    transform:translateX(100%);
+    transition:transform .22s ease;
+    z-index:31;
+    overflow-y:auto;
+    padding:28px 26px 40px;
+  }
+  .drawer.open{transform:translateX(0);}
+  .drawer-close{
+    position:absolute;top:20px;right:20px;
+    width:30px;height:30px;
+    border:1px solid var(--line-strong);
+    background:var(--paper);
+    border-radius:50%;
+    cursor:pointer;
+    font-size:16px;
+    line-height:1;
+    color:var(--ink-soft);
+  }
+  .drawer-eyebrow{font-family:'IBM Plex Mono', monospace;font-size:11px;color:var(--slate);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;}
+  .drawer h3{font-size:21px;margin-bottom:6px;}
+  .drawer-pill-row{display:flex;gap:8px;margin:10px 0 18px;flex-wrap:wrap;}
+  .drawer-purpose{font-size:14px;color:var(--ink-soft);margin-bottom:20px;}
+  dl{margin:0 0 20px;}
+  .field{margin-bottom:14px;}
+  .field dt{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10.5px;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    color:var(--slate);
+    margin-bottom:3px;
+  }
+  .field dd{margin:0;font-size:13.5px;color:var(--ink);}
+  .issues{list-style:none;margin:0;padding:0;}
+  .issues li{
+    font-size:13.5px;
+    padding:8px 10px;
+    background:var(--rust-100);
+    color:#7A322C;
+    border-radius:6px;
+    margin-bottom:6px;
+  }
+  .issues li.ok{background:var(--infra-100);color:#5B6067;}
+  .related-wrap{margin-top:22px;}
+  .related-title{font-family:'IBM Plex Mono', monospace;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--slate);margin-bottom:8px;}
+  .related-chip{
+    display:inline-block;
+    font-size:12.5px;
+    padding:6px 11px;
+    border:1px solid var(--line-strong);
+    border-radius:20px;
+    margin:0 6px 6px 0;
+    cursor:pointer;
+    background:var(--paper);
+  }
+  .related-chip:hover{border-color:var(--ink-soft);}
+
+  footer{
+    max-width:1120px;margin:0 auto;padding:0 32px 50px;
+    font-size:12px;color:var(--slate);
+    border-top:1px solid var(--line);
+    padding-top:18px;
+  }
+
+  @media (max-width:640px){
+    header{padding:22px 18px 16px;}
+    main{padding:24px 18px 70px;}
+    .drawer{width:100%;max-width:100%;}
+    .gauge-seg span{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="eyebrow">Systems landscape review</div>
+    <h1>Municipal systems &amp; integration landscape</h1>
+    <p class="subtitle">Application inventory cross-referenced with documented data integrations. Click any system for full detail, including data flow, protocol, and open issues.</p>
+    <div class="gauge-wrap">
+      <div class="gauge" id="gauge"></div>
+      <div class="legend" id="legend"></div>
+    </div>
+  </div>
+</header>
+
+<main id="main"></main>
+
+<footer>Prepared by YellowDog IT &mdash; municipal IT advisory. Status reflects documented integrations only; blank fields indicate no integration record exists.</footer>
+
+<div class="backdrop" id="backdrop"></div>
+<div class="drawer" id="drawer">
+  <button class="drawer-close" id="drawerClose" aria-label="Close">&times;</button>
+  <div id="drawerContent"></div>
+</div>
+
+<script>
+const STATUS_LABEL = {
+  connected: 'Automated / file feed',
+  manual: 'Manual connection',
+  isolated: 'Isolated',
+  undocumented: 'Undocumented',
+  infra: 'Infrastructure'
+};
+
+const categories = [
+{ id:'finance', name:'Finance &amp; corporate services', apps:[
+  { id:'diamond-erp', name:'Diamond ERP', teaser:'Core financials, GL, AP/AR, budgeting, taxation, utility billing', status:'connected',
+    purpose:'Central financial system of record: general ledger, accounts payable and receivable, budgeting, taxation, and utility billing. Sits at the centre of every documented integration in the environment.',
+    dataStructure:'CSV, XML — varies by feed', direction:'Hub — receives from MuniSight and the bank/processor, sends to CRA',
+    frequency:'Mixed: assessment-cycle batch, daily batch, and per pay period / year-end', protocol:'File-based transfer and secure portals; no API',
+    issues:['No validation layer spans the three feeds', 'Every inbound and outbound flow depends on a manual step'],
+    related:['munisight-fin','bank','cra'] },
+  { id:'munisight-fin', name:'MuniSight financial integrations', teaser:'Assessment and parcel data feeding financial processes', status:'connected',
+    purpose:'Importing property assessment data and parcel information into Diamond for taxation.',
+    dataStructure:'CSV (assessment files), XML (parcel exports)', direction:'One way — MuniSight → Diamond',
+    frequency:'Batch, periodic during the assessment cycle', protocol:'File-based transfer, no API',
+    issues:['Manual import process', 'No validation automation'], related:['diamond-erp'] },
+  { id:'bank', name:'Bank / payment processor', teaser:'Processing utility and tax payments, reconciling deposits', status:'connected', external:true,
+    purpose:'Processing utility and tax payments and reconciling deposits against Diamond.',
+    dataStructure:'CSV settlement files', direction:'One way — processor → Diamond',
+    frequency:'Daily batch', protocol:'Secure file download via HTTPS',
+    issues:['Manual reconciliation'], related:['diamond-erp','diamond-util'] },
+  { id:'cra', name:'CRA remittance portals', teaser:'Payroll remittances and T4 filings', status:'connected', external:true,
+    purpose:'Exporting payroll data for CRA remittances and T4 filings.',
+    dataStructure:'XML/CSV (CRA formats)', direction:'One way — Diamond → CRA',
+    frequency:'Batch, per pay period and year-end', protocol:'CRA secure upload portals',
+    issues:['Manual upload', 'No automated error checking'], related:['diamond-erp','diamond-hr'] },
+  { id:'m365-fin', name:'Microsoft 365', teaser:'Email, SharePoint document storage for finance workflows', status:'undocumented',
+    purpose:'Email and document storage supporting finance workflows.',
+    dataStructure:'Not documented', direction:'Not documented', frequency:'Not documented', protocol:'Not documented',
+    issues:['No formal data integration with Diamond has been documented'], related:[] }
+]},
+{ id:'hr', name:'HR &amp; payroll', apps:[
+  { id:'diamond-hr', name:'Diamond HR/Payroll', teaser:'Payroll processing, employee records, timesheets', status:'connected',
+    purpose:'Payroll processing, employee records, and timesheets; feeds CRA remittance and T4 filings.',
+    dataStructure:'XML/CSV (CRA formats) on export', direction:'One way out — Diamond → CRA',
+    frequency:'Batch, per pay period and year-end', protocol:'CRA secure upload portals',
+    issues:['Manual upload', 'No automated error checking'], related:['cra'] }
+]},
+{ id:'utilities', name:'Utilities', apps:[
+  { id:'diamond-util', name:'Diamond Utilities', teaser:'Utility billing, meter data, customer accounts', status:'connected',
+    purpose:'Utility billing, meter data, and customer accounts; payments reconciled through the bank/processor feed.',
+    dataStructure:'CSV settlement files (shared with Diamond ERP)', direction:'One way — processor → Diamond',
+    frequency:'Daily batch', protocol:'Secure file download via HTTPS',
+    issues:['Manual reconciliation — same gap as core financials'], related:['bank'] },
+  { id:'gx3r', name:'GX-3R gas meter software', teaser:'Gas detection and meter reading (public works)', status:'isolated',
+    purpose:'Downloading gas detection logs for confined space safety.',
+    dataStructure:'CSV/PDF', direction:'One way — device → workstation',
+    frequency:'Event-based', protocol:'USB connection, local software',
+    issues:['Fully isolated — no network path to any other system'], related:[] }
+]},
+{ id:'assets', name:'Asset management', apps:[
+  { id:'munisight-catalis', name:'MuniSight (Catalis)', teaser:'GIS, asset inventory, public works asset management', status:'manual',
+    purpose:'Updating parcel, zoning, and infrastructure layers shared with the GIS platform.',
+    dataStructure:'Shapefiles, GeoJSON', direction:'Bi-directional — GIS edits ↔ MuniSight',
+    frequency:'Event-based, when GIS updates occur', protocol:'GIS import/export tools',
+    issues:['No automated sync with asset management workflows'], related:['munisight-gis','munisight-gis-layers'] },
+  { id:'scada', name:'SCADA system', teaser:'Water/wastewater monitoring and control (hosted on APPS1 VM)', status:'isolated',
+    purpose:'Exporting operational data for regulatory reporting.',
+    dataStructure:'CSV/PDF exports', direction:'One way — SCADA → reports',
+    frequency:'Event-based, monthly or incident-driven', protocol:'Local export, no network API',
+    issues:['Fully isolated'], related:[] }
+]},
+{ id:'land', name:'Land, permitting &amp; development', apps:[
+  { id:'diamond-permit', name:'Diamond Permitting', teaser:'Basic permitting functions', status:'undocumented',
+    purpose:'Basic permitting functions.',
+    dataStructure:'Not documented', direction:'Not documented', frequency:'Not documented', protocol:'Not documented',
+    issues:['No integration with GIS or land records has been documented'], related:[] },
+  { id:'munisight-gis-layers', name:'MuniSight GIS layers', teaser:'Land parcels, zoning, development overlays', status:'manual',
+    purpose:'Updating parcel, zoning, and infrastructure layers.',
+    dataStructure:'Shapefiles, GeoJSON', direction:'Bi-directional — GIS edits ↔ MuniSight',
+    frequency:'Event-based, when GIS updates occur', protocol:'GIS import/export tools',
+    issues:['No automated sync with asset management workflows'], related:['munisight-gis','munisight-catalis'] }
+]},
+{ id:'gis', name:'GIS', apps:[
+  { id:'munisight-gis', name:'MuniSight GIS', teaser:'Primary GIS platform', status:'manual',
+    purpose:'Primary GIS platform; the source system behind the parcel, zoning, and infrastructure layer sync.',
+    dataStructure:'Shapefiles, GeoJSON', direction:'Bi-directional — GIS edits ↔ MuniSight',
+    frequency:'Event-based, when GIS updates occur', protocol:'GIS import/export tools',
+    issues:['No automated sync with asset management workflows'], related:['munisight-gis-layers','munisight-catalis','catalis-web'] },
+  { id:'catalis-web', name:'Catalis Web GIS', teaser:'Browser-based GIS access for staff', status:'undocumented',
+    purpose:'Browser-based GIS access for staff.',
+    dataStructure:'Not documented', direction:'Not documented', frequency:'Not documented', protocol:'Not documented',
+    issues:['Shares a backend with MuniSight GIS but has no separately documented integration'], related:['munisight-gis'] },
+  { id:'arcgis', name:'ArcGIS Online', teaser:'Used by consultants; not a core Town system', status:'isolated',
+    purpose:'Used by external consultants for GIS work outside the Town\'s core systems.',
+    dataStructure:'Not documented', direction:'Not documented', frequency:'Not documented', protocol:'Not documented',
+    issues:['Not a core Town system — data exchange with Town platforms is not documented'], related:[] }
+]},
+{ id:'records', name:'Records management', apps:[
+  { id:'sharepoint', name:'SharePoint Online', teaser:'Primary digital records repository', status:'undocumented',
+    purpose:'Primary digital records repository.',
+    dataStructure:'Not documented', direction:'Not documented', frequency:'Not documented', protocol:'Not documented',
+    issues:['No documented integration with line-of-business systems'], related:[] },
+  { id:'fs1', name:'File server (FS1)', teaser:'Legacy records storage', status:'undocumented',
+    purpose:'Legacy records storage.',
+    dataStructure:'Not documented', direction:'Not documented', frequency:'Not documented', protocol:'Not documented',
+    issues:['Legacy platform running in parallel with SharePoint; no migration path documented'], related:[] }
+]},
+{ id:'security', name:'Building &amp; physical security', apps:[
+  { id:'entrapass', name:'EntraPass', teaser:'Door access control', status:'manual',
+    purpose:'Updating door access for new hires and terminations.',
+    dataStructure:'None — manual updates', direction:'One way — HR → EntraPass',
+    frequency:'Event-based', protocol:'Human workflow',
+    issues:['No automated onboarding/offboarding'], related:[] },
+  { id:'sennheiser', name:'Sennheiser audio system', teaser:'Council chamber audio network (isolated VLAN)', status:'isolated',
+    purpose:'Council chamber audio network.',
+    dataStructure:'Not documented', direction:'Not documented', frequency:'Not documented', protocol:'Isolated VLAN',
+    issues:['Fully isolated by design'], related:[] }
+]},
+{ id:'comms', name:'Communications &amp; telephony', apps:[
+  { id:'avaya', name:'Avaya IP Office', teaser:'Phone system', status:'isolated',
+    purpose:'Telephony, voicemail, and call routing.',
+    dataStructure:'None — no integration', direction:'None', frequency:'N/A', protocol:'SIP/VoIP, internal only',
+    issues:['No Teams integration'], related:['teams'] },
+  { id:'teams', name:'Microsoft Teams', teaser:'Collaboration, meetings', status:'undocumented',
+    purpose:'Collaboration and meetings.',
+    dataStructure:'Not documented', direction:'Not documented', frequency:'Not documented', protocol:'Not documented',
+    issues:['No telephony tie-in with Avaya IP Office'], related:['avaya'] }
+]},
+{ id:'infra', name:'IT infrastructure &amp; management', apps:[
+  { id:'hyperv', name:'Hyper-V', teaser:'Virtualization platform', status:'infra',
+    purpose:'Virtualization platform hosting Town servers.', dataStructure:'N/A', direction:'N/A', frequency:'N/A', protocol:'N/A',
+    issues:['Infrastructure layer — outside the scope of application data integration'], related:[] },
+  { id:'xclarity', name:'Lenovo XClarity', teaser:'Hardware monitoring', status:'infra',
+    purpose:'Hardware monitoring for server infrastructure.', dataStructure:'N/A', direction:'N/A', frequency:'N/A', protocol:'N/A',
+    issues:['Infrastructure layer — outside the scope of application data integration'], related:[] },
+  { id:'trendmicro', name:'Trend Micro / AV', teaser:'Endpoint protection', status:'infra',
+    purpose:'Endpoint protection across Town devices.', dataStructure:'N/A', direction:'N/A', frequency:'N/A', protocol:'N/A',
+    issues:['Infrastructure layer — outside the scope of application data integration'], related:[] },
+  { id:'watchguard', name:'WatchGuard firewalls', teaser:'Network security', status:'infra',
+    purpose:'Network perimeter security.', dataStructure:'N/A', direction:'N/A', frequency:'N/A', protocol:'N/A',
+    issues:['Infrastructure layer — outside the scope of application data integration'], related:[] },
+  { id:'backup', name:'Backup &amp; DR systems', teaser:'BACKUPHOST2 + offsite replication', status:'infra',
+    purpose:'Backup and disaster recovery, including offsite replication.', dataStructure:'N/A', direction:'N/A', frequency:'N/A', protocol:'N/A',
+    issues:['Infrastructure layer — outside the scope of application data integration'], related:[] }
+]}
+];
+
+// flat index for lookups
+const appIndex = {};
+categories.forEach(cat => cat.apps.forEach(app => { app._cat = cat.name; appIndex[app.id] = app; }));
+
+// active filters
+const activeFilters = new Set(Object.keys(STATUS_LABEL));
+
+function counts(){
+  const c = {connected:0, manual:0, isolated:0, undocumented:0, infra:0};
+  categories.forEach(cat => cat.apps.forEach(a => c[a.status]++));
+  return c;
+}
+
+function renderGauge(){
+  const c = counts();
+  const total = Object.values(c).reduce((a,b)=>a+b,0);
+  const gauge = document.getElementById('gauge');
+  gauge.innerHTML = '';
+  Object.keys(STATUS_LABEL).forEach(key=>{
+    if(!c[key]) return;
+    const pct = (c[key]/total*100).toFixed(1);
+    const seg = document.createElement('div');
+    seg.className = 'gauge-seg ' + key + (activeFilters.has(key) ? '' : ' dim');
+    seg.style.flex = c[key];
+    seg.innerHTML = '<span>'+c[key]+' '+STATUS_LABEL[key]+'</span>';
+    seg.onclick = () => toggleFilter(key);
+    gauge.appendChild(seg);
+  });
+
+  const legend = document.getElementById('legend');
+  legend.innerHTML = '';
+  Object.keys(STATUS_LABEL).forEach(key=>{
+    const item = document.createElement('div');
+    item.className = 'legend-item' + (activeFilters.has(key) ? '' : ' off');
+    item.innerHTML = '<span class="dot '+key+'"></span>'+STATUS_LABEL[key]+' ('+c[key]+')';
+    item.onclick = () => toggleFilter(key);
+    legend.appendChild(item);
+  });
+}
+
+function toggleFilter(key){
+  if(activeFilters.has(key)) activeFilters.delete(key); else activeFilters.add(key);
+  if(activeFilters.size === 0) Object.keys(STATUS_LABEL).forEach(k=>activeFilters.add(k));
+  renderGauge();
+  renderMain();
+}
+
+function renderMain(){
+  const main = document.getElementById('main');
+  main.innerHTML = '';
+  categories.forEach(cat=>{
+    const visibleApps = cat.apps.filter(a=>activeFilters.has(a.status));
+    if(visibleApps.length === 0) return;
+    const section = document.createElement('div');
+    section.className = 'category';
+    section.innerHTML =
+      '<div class="category-head"><h2>'+cat.name+'</h2><span class="category-count">'+visibleApps.length+' of '+cat.apps.length+' shown</span></div>'+
+      '<div class="grid"></div>';
+    const grid = section.querySelector('.grid');
+    visibleApps.forEach(app=>{
+      const card = document.createElement('button');
+      card.className = 'card ' + app.status;
+      card.setAttribute('data-id', app.id);
+      card.innerHTML =
+        '<div class="card-top"><div class="card-name">'+app.name+'</div>'+
+        '<span class="pill '+app.status+'">'+STATUS_LABEL[app.status]+'</span></div>'+
+        '<div class="card-teaser">'+app.teaser+'</div>'+
+        (app.external ? '<div class="card-external">External system</div>' : '');
+      card.onclick = () => openDrawer(app.id);
+      card.style.textAlign = 'left';
+      card.style.width = '100%';
+      card.style.font = 'inherit';
+      grid.appendChild(card);
+    });
+    main.appendChild(section);
+  });
+}
+
+function openDrawer(id){
+  const app = appIndex[id];
+  if(!app) return;
+  const content = document.getElementById('drawerContent');
+  content.innerHTML =
+    '<div class="drawer-eyebrow">'+app._cat+(app.external?' &middot; external system':'')+'</div>'+
+    '<h3>'+app.name+'</h3>'+
+    '<div class="drawer-pill-row"><span class="pill '+app.status+'">'+STATUS_LABEL[app.status]+'</span></div>'+
+    '<p class="drawer-purpose">'+app.purpose+'</p>'+
+    '<dl>'+
+      '<div class="field"><dt>Data structure</dt><dd>'+app.dataStructure+'</dd></div>'+
+      '<div class="field"><dt>Direction</dt><dd>'+app.direction+'</dd></div>'+
+      '<div class="field"><dt>Frequency</dt><dd>'+app.frequency+'</dd></div>'+
+      '<div class="field"><dt>Protocol</dt><dd>'+app.protocol+'</dd></div>'+
+    '</dl>'+
+    '<div class="related-title">Issues &amp; concerns</div>'+
+    '<ul class="issues">'+app.issues.map(i=>'<li>'+i+'</li>').join('')+'</ul>'+
+    (app.related.length ? '<div class="related-wrap"><div class="related-title">Related systems</div>'+
+      app.related.map(rid=>{
+        const r = appIndex[rid];
+        return r ? '<span class="related-chip" data-id="'+rid+'">'+r.name+'</span>' : '';
+      }).join('') + '</div>' : '');
+
+  content.querySelectorAll('.related-chip').forEach(chip=>{
+    chip.onclick = () => openDrawer(chip.getAttribute('data-id'));
+  });
+
+  document.getElementById('drawer').classList.add('open');
+  document.getElementById('backdrop').classList.add('open');
+}
+
+function closeDrawer(){
+  document.getElementById('drawer').classList.remove('open');
+  document.getElementById('backdrop').classList.remove('open');
+}
+
+document.getElementById('drawerClose').onclick = closeDrawer;
+document.getElementById('backdrop').onclick = closeDrawer;
+document.addEventListener('keydown', e => { if(e.key === 'Escape') closeDrawer(); });
+
+renderGauge();
+renderMain();
+</script>
+</body>
+</html>
