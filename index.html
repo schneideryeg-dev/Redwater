@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Technology roadmap</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#16232E; --ink-soft:#3E4C58; --paper:#F7F6F1; --panel:#FFFFFF;
+    --line:#DEDACE; --line-strong:#C7C2B3; --radius:10px; --shadow:0 2px 10px rgba(22,35,46,0.06);
+
+    --replace:#A5433B;   --replace-100:#F3E0DD;
+    --assess:#B4842B;    --assess-100:#F3E7CF;
+    --integrate:#3B6EA5; --integrate-100:#DDE7F1;
+    --retain:#4C7A34;    --retain-100:#E1EAD9;
+    --support:#6B4E86;   --support-100:#E7E0EE;
+    --retire:#5B6067;    --retire-100:#E7E8E6;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:'IBM Plex Sans', sans-serif;line-height:1.55;}
+  h1,h2,h3{font-family:'Source Serif 4', serif;font-weight:600;margin:0;color:var(--ink);}
+
+  header{position:sticky;top:0;z-index:20;background:var(--paper);border-bottom:1px solid var(--line);padding:28px 32px 18px;}
+  .header-inner{max-width:1160px;margin:0 auto;}
+  .eyebrow{font-family:'IBM Plex Mono', monospace;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--assess);margin-bottom:6px;}
+  h1{font-size:26px;}
+  .subtitle{color:var(--ink-soft);font-size:14.5px;margin-top:6px;max-width:680px;}
+
+  .banner{margin-top:16px;font-size:13.5px;color:var(--ink-soft);background:var(--panel);border:1px solid var(--line-strong);
+    border-radius:8px;padding:10px 14px;max-width:680px;}
+  .banner strong{color:var(--ink);}
+
+  .legend{display:flex;flex-wrap:wrap;gap:8px 10px;margin-top:16px;}
+  .legend-item{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--ink-soft);cursor:pointer;user-select:none;
+    border:1px solid var(--line-strong);padding:5px 10px;border-radius:20px;background:var(--panel);}
+  .legend-item.off{opacity:0.4;}
+  .dot{width:9px;height:9px;border-radius:50%;flex:none;}
+  .dot.replace{background:var(--replace);} .dot.assess{background:var(--assess);} .dot.integrate{background:var(--integrate);}
+  .dot.retain{background:var(--retain);} .dot.support{background:var(--support);} .dot.retire{background:var(--retire);}
+
+  main{max-width:1160px;margin:0 auto;padding:30px 32px 90px;}
+  .division{margin-bottom:44px;}
+  .division-head{font-family:'IBM Plex Mono', monospace;font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;
+    color:var(--assess);margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid var(--ink);}
+  .service-area{margin-bottom:24px;}
+  .service-area-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px;}
+  .service-area-head h2{font-size:16px;}
+  .service-area-count{font-family:'IBM Plex Mono', monospace;font-size:11.5px;color:#767F88;}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill, minmax(240px, 1fr));gap:12px;}
+  .card{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--assess);border-radius:var(--radius);
+    padding:14px 16px;cursor:pointer;box-shadow:var(--shadow);transition:transform .12s ease, border-color .12s ease;
+    text-align:left;width:100%;font:inherit;}
+  .card:hover{transform:translateY(-2px);border-color:var(--line-strong);}
+  .card.replace{border-left-color:var(--replace);} .card.assess{border-left-color:var(--assess);}
+  .card.integrate{border-left-color:var(--integrate);} .card.retain{border-left-color:var(--retain);}
+  .card.support{border-left-color:var(--support);} .card.retire{border-left-color:var(--retire);}
+  .card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;}
+  .card-name{font-family:'Source Serif 4', serif;font-weight:600;font-size:14.5px;}
+  .pill{font-family:'IBM Plex Mono', monospace;font-size:10px;letter-spacing:.03em;text-transform:uppercase;padding:3px 7px;border-radius:20px;flex:none;white-space:nowrap;}
+  .pill.replace{background:var(--replace-100);color:var(--replace);} .pill.assess{background:var(--assess-100);color:var(--assess);}
+  .pill.integrate{background:var(--integrate-100);color:var(--integrate);} .pill.retain{background:var(--retain-100);color:var(--retain);}
+  .pill.support{background:var(--support-100);color:var(--support);} .pill.retire{background:var(--retire-100);color:var(--retire);}
+  .card-vendor{font-family:'IBM Plex Mono', monospace;font-size:11px;color:#767F88;margin-top:6px;}
+  .card-planned{font-size:12.5px;color:var(--ink-soft);margin-top:8px;}
+  .card-planned span{color:var(--ink);font-weight:500;}
+  .card-tag{display:inline-block;font-family:'IBM Plex Mono', monospace;font-size:9.5px;text-transform:uppercase;
+    background:var(--assess-100);color:var(--assess);padding:2px 6px;border-radius:4px;margin-top:8px;}
+
+  .backdrop{position:fixed;inset:0;background:rgba(22,35,46,0.32);opacity:0;pointer-events:none;transition:opacity .2s ease;z-index:30;}
+  .backdrop.open{opacity:1;pointer-events:auto;}
+  .drawer{position:fixed;top:0;right:0;bottom:0;width:440px;max-width:92vw;background:var(--panel);
+    box-shadow:-8px 0 30px rgba(22,35,46,0.15);transform:translateX(100%);transition:transform .22s ease;
+    z-index:31;overflow-y:auto;padding:28px 26px 40px;}
+  .drawer.open{transform:translateX(0);}
+  .drawer-close{position:absolute;top:20px;right:20px;width:30px;height:30px;border:1px solid var(--line-strong);
+    background:var(--paper);border-radius:50%;cursor:pointer;font-size:16px;line-height:1;color:var(--ink-soft);}
+  .drawer-eyebrow{font-family:'IBM Plex Mono', monospace;font-size:11px;color:#767F88;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;}
+  .drawer h3{font-size:20px;margin-bottom:4px;line-height:1.3;}
+  .drawer-vendor{font-family:'IBM Plex Mono', monospace;font-size:12px;color:#767F88;margin-bottom:14px;}
+  .drawer-pill-row{display:flex;gap:8px;margin:0 0 20px;flex-wrap:wrap;}
+
+  .field{margin-bottom:14px;}
+  .field dt{font-family:'IBM Plex Mono', monospace;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:#767F88;margin-bottom:3px;}
+  .field dd{margin:0;font-size:13.5px;color:var(--ink);}
+  .planned-box{font-size:13.5px;padding:12px 14px;background:var(--assess-100);color:#7A5A1E;border-radius:8px;margin-bottom:18px;}
+  .planned-box strong{display:block;font-family:'IBM Plex Mono', monospace;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;color:#7A5A1E;}
+  .notes{font-size:13px;color:var(--ink-soft);font-style:italic;margin-top:16px;}
+
+  .related-title{font-family:'IBM Plex Mono', monospace;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:#767F88;margin:20px 0 8px;}
+  .chip{display:inline-block;font-size:12.5px;padding:6px 11px;border:1px solid var(--line-strong);border-radius:20px;margin:0 6px 6px 0;cursor:pointer;background:var(--paper);}
+  .chip:hover{border-color:var(--ink-soft);}
+
+  footer{max-width:1160px;margin:0 auto;padding:0 32px 50px;font-size:12px;color:#767F88;border-top:1px solid var(--line);padding-top:18px;}
+
+  @media (max-width:640px){
+    header{padding:22px 18px 16px;} main{padding:24px 18px 70px;} .drawer{width:100%;max-width:100%;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="eyebrow">Technology roadmap</div>
+    <h1>Redwater Technology Roadmap - DEMO PURPOSE ONLY</h1>
+    <p class="subtitle">Current applications across the organization, mapped against the planned direction and their relationship to the ERP replacement. Click any system for the full detail.</p>
+    <div class="banner" id="banner"></div>
+    <div class="legend" id="legend"></div>
+  </div>
+</header>
+
+<main id="main"></main>
+
+<footer>Prepared by YellowDog IT &mdash; municipal IT advisory. Roadmap reflects current planning status and is subject to change.</footer>
+
+<div class="backdrop" id="backdrop"></div>
+<div class="drawer" id="drawer">
+  <button class="drawer-close" id="drawerClose" aria-label="Close">&times;</button>
+  <div id="drawerContent"></div>
+</div>
+
+<script>
+const GROUP_LABEL = { replace:'Replace', assess:'Assess', integrate:'Integrate with ERP', retain:'Retain', support:'Support ERP', retire:'Retire' };
+const GROUP_ORDER = ['replace','assess','integrate','retain','support','retire'];
+
+function groupFor(rel){
+  if(rel.indexOf('Replace') !== -1) return 'replace';
+  if(rel.indexOf('Retire') !== -1) return 'retire';
+  if(rel.indexOf('Support ERP') !== -1) return 'support';
+  if(rel.indexOf('Retain') !== -1) return 'retain';
+  if(rel.indexOf('Integrate') !== -1) return 'integrate';
+  return 'assess';
+}
+
+const systems = [
+{ division:'Corporate Services', serviceArea:'Finance', capability:'ERP', name:'Diamond ERP', teaser:'Core financials, GL, AP/AR, budgeting, taxation, utility billing', vendor:'CentralSquare', currentState:'Current', planned:'Cloud ERP', erpRelationship:'Replace', owner:'Finance', notes:'Existing ERP', platform:'Diamond' },
+{ division:'Corporate Services', serviceArea:'Finance', capability:'Reporting / integration', name:'Popdock', teaser:'Cloud reporting & integration', vendor:'eOne Solutions', currentState:'Current', planned:'Assess', erpRelationship:'Assess', owner:'Finance', notes:'Cloud reporting & integration', platform:null },
+{ division:'Corporate Services', serviceArea:'Finance', capability:'Financial integrations', name:'MuniSight financial integrations', teaser:'GIS / asset integrations', vendor:'Catalis', currentState:'Current', planned:'Continue', erpRelationship:'Integrate', owner:'Finance', notes:'GIS / Asset integrations', platform:'MuniSight / Catalis' },
+{ division:'Corporate Services', serviceArea:'Finance', capability:'Productivity', name:'Microsoft 365', teaser:'Email / SharePoint', vendor:'Microsoft', currentState:'Current', planned:'Continue', erpRelationship:'Retain', owner:'Corporate Services', notes:'Email / SharePoint', platform:'Microsoft 365' },
+{ division:'Corporate Services', serviceArea:'Finance', capability:'Budgeting', name:'Questica Budget', teaser:'Existing budgeting platform', vendor:'Euna Solutions', currentState:'Current', planned:'Questica upgrade', erpRelationship:'Retain / Integrate', owner:'Finance', notes:'Existing budgeting platform', platform:null },
+
+{ division:'Corporate Services', serviceArea:'Records Management', capability:'Records repository', name:'SharePoint Online', teaser:'Corporate records', vendor:'Microsoft', currentState:'Current', planned:'Expand', erpRelationship:'Retain', owner:'Corporate Services', notes:'Corporate records', platform:'Microsoft 365' },
+{ division:'Corporate Services', serviceArea:'Records Management', capability:'Legacy file storage', name:'FS1 file server', teaser:'Legacy storage', vendor:'Internal', currentState:'Current', planned:'Migrate to SharePoint', erpRelationship:'Retire', owner:'Corporate Services', notes:'Legacy storage', platform:null },
+
+{ division:'Corporate Services', serviceArea:'Human Resources', capability:'Payroll / HR', name:'Diamond HR / Payroll', teaser:'Payroll & HR', vendor:'CentralSquare', currentState:'Current', planned:'Cloud ERP', erpRelationship:'Replace', owner:'HR', notes:'Payroll & HR', platform:'Diamond' },
+
+{ division:'Corporate Services', serviceArea:'IT Infrastructure', capability:'Virtualization', name:'Hyper-V', teaser:'Virtual infrastructure', vendor:'Microsoft', currentState:'Current', planned:'Server refresh (2027)', erpRelationship:'Assess', owner:'IT', notes:'Virtual infrastructure', platform:null },
+{ division:'Corporate Services', serviceArea:'IT Infrastructure', capability:'Hardware monitoring', name:'Lenovo XClarity', teaser:'Hardware monitoring', vendor:'Lenovo', currentState:'Current', planned:'Continue', erpRelationship:'Retain', owner:'IT', notes:'Hardware monitoring', platform:null },
+{ division:'Corporate Services', serviceArea:'IT Infrastructure', capability:'Endpoint protection', name:'Trend Micro', teaser:'Endpoint security', vendor:'Trend Micro', currentState:'Current', planned:'Continue', erpRelationship:'Retain', owner:'IT', notes:'Endpoint security', platform:null },
+{ division:'Corporate Services', serviceArea:'IT Infrastructure', capability:'Network security', name:'WatchGuard firewalls', teaser:'Firewall replacement', vendor:'WatchGuard', currentState:'Current', planned:'Firewall modernization', erpRelationship:'Support ERP', owner:'IT', notes:'Firewall replacement', platform:null },
+{ division:'Corporate Services', serviceArea:'IT Infrastructure', capability:'Backup & disaster recovery', name:'BackupHost2 / replication', teaser:'Backup infrastructure', vendor:'Veeam', currentState:'Current', planned:'Improve backup strategy', erpRelationship:'Support ERP', owner:'IT', notes:'Backup infrastructure', platform:null },
+
+{ division:'Corporate Services', serviceArea:'Communications', capability:'Telephony', name:'Avaya IP Office', teaser:'Phone system', vendor:'Avaya', currentState:'Current', planned:'Evaluate', erpRelationship:'Assess', owner:'IT', notes:'Phone system', platform:null },
+{ division:'Corporate Services', serviceArea:'Communications', capability:'Collaboration', name:'Microsoft Teams', teaser:'Collaboration', vendor:'Microsoft', currentState:'Current', planned:'Continue', erpRelationship:'Retain', owner:'Corporate Services', notes:'Collaboration', platform:'Microsoft 365' },
+
+{ division:'Operations', serviceArea:'Parks & Facilities', capability:'Recreation management', name:'PerfectMind (nextRec)', teaser:'Recreation', vendor:'Xplor Technologies', currentState:'Current', planned:'Continue', erpRelationship:'Integrate', owner:'Community Services', notes:'Recreation', platform:null },
+{ division:'Operations', serviceArea:'Building Security', capability:'Door access', name:'EntraPass', teaser:'Building access', vendor:'Kantech', currentState:'Current', planned:'ICT Protégé GX', erpRelationship:'Assess', owner:'Facilities', notes:'Building access', platform:null },
+{ division:'Operations', serviceArea:'Council Chambers', capability:'AV', name:'Sennheiser audio system', teaser:'Council chambers', vendor:'Sennheiser', currentState:'Current', planned:'Continue', erpRelationship:'Retain', owner:'Legislative', notes:'Council Chambers', platform:null },
+{ division:'Operations', serviceArea:'Asset Management', capability:'GIS / asset management', name:'MuniSight', teaser:'Asset management', vendor:'Catalis', currentState:'Current', planned:'Continue', erpRelationship:'Integrate', owner:'Public Works', notes:'Asset management', platform:'MuniSight / Catalis' },
+{ division:'Operations', serviceArea:'Utilities', capability:'SCADA', name:'FactoryTalk / SCADA', teaser:'Operational technology', vendor:'Rockwell', currentState:'Current', planned:'Continue', erpRelationship:'Retain', owner:'Utilities', notes:'Operational Technology', platform:null },
+{ division:'Operations', serviceArea:'Development', capability:'Permitting', name:'Diamond Permitting', teaser:'Permitting', vendor:'CentralSquare', currentState:'Current', planned:'Cloud ERP / Assess', erpRelationship:'Replace / Assess', owner:'Planning', notes:'Permitting', platform:'Diamond' },
+{ division:'Operations', serviceArea:'Development', capability:'Land information', name:'MuniSight GIS layers', teaser:'GIS layers', vendor:'Catalis', currentState:'Current', planned:'Continue', erpRelationship:'Integrate', owner:'Planning', notes:'GIS layers', platform:'MuniSight / Catalis' },
+{ division:'Operations', serviceArea:'GIS', capability:'GIS platform', name:'MuniSight GIS', teaser:'Primary GIS', vendor:'Catalis', currentState:'Current', planned:'Continue', erpRelationship:'Integrate', owner:'GIS', notes:'Primary GIS', platform:'MuniSight / Catalis' },
+{ division:'Operations', serviceArea:'GIS', capability:'Web GIS', name:'Catalis Web GIS', teaser:'Browser GIS', vendor:'Catalis', currentState:'Current', planned:'Continue', erpRelationship:'Retain', owner:'GIS', notes:'Browser GIS', platform:'MuniSight / Catalis' },
+{ division:'Operations', serviceArea:'GIS', capability:'GIS', name:'ArcGIS Online', teaser:'Consultant use', vendor:'ESRI', currentState:'Current', planned:'Continue', erpRelationship:'Assess', owner:'GIS', notes:'Consultant use', platform:null },
+
+{ division:'Utilities', serviceArea:'Utilities', capability:'Utility billing', name:'Diamond Utilities', teaser:'Utility billing', vendor:'CentralSquare', currentState:'Current', planned:'Cloud ERP', erpRelationship:'Replace', owner:'Utilities', notes:'Utility billing', platform:'Diamond' },
+{ division:'Utilities', serviceArea:'Utilities', capability:'AMI / metering', name:'Neptune Technology Group', teaser:'Automated metering', vendor:'Neptune', currentState:'Planned', planned:'Implement', erpRelationship:'Integrate', owner:'Utilities', notes:'Automated metering', platform:null },
+{ division:'Utilities', serviceArea:'Utilities', capability:'Gas monitoring', name:'GX-3R gas meter software', teaser:'Gas detection', vendor:'RKI', currentState:'Current', planned:'Continue', erpRelationship:'Retain', owner:'Utilities', notes:'Gas detection', platform:null }
+];
+
+systems.forEach((s,i)=>{ s.id = 'sys-'+i; s.group = groupFor(s.erpRelationship); });
+const appIndex = {}; systems.forEach(s => appIndex[s.id] = s);
+
+const activeFilters = new Set(GROUP_ORDER);
+
+function renderBanner(){
+  const c = {}; GROUP_ORDER.forEach(g=>c[g]=0);
+  systems.forEach(s=>c[s.group]++);
+  document.getElementById('banner').innerHTML =
+    '<strong>'+c.replace+'</strong> system(s) flagged for replacement as part of the ERP move &middot; '+
+    '<strong>'+c.integrate+'</strong> to integrate with it &middot; '+
+    '<strong>'+c.assess+'</strong> under assessment &middot; '+
+    '<strong>'+c.retire+'</strong> to retire.';
+}
+
+function counts(){
+  const c = {}; GROUP_ORDER.forEach(g=>c[g]=0);
+  systems.forEach(s=>c[s.group]++);
+  return c;
+}
+
+function renderLegend(){
+  const c = counts();
+  const legend = document.getElementById('legend');
+  legend.innerHTML = '';
+  GROUP_ORDER.forEach(key=>{
+    if(!c[key]) return;
+    const item = document.createElement('div');
+    item.className = 'legend-item' + (activeFilters.has(key) ? '' : ' off');
+    item.innerHTML = '<span class="dot '+key+'"></span>'+GROUP_LABEL[key]+' ('+c[key]+')';
+    item.onclick = () => toggleFilter(key);
+    legend.appendChild(item);
+  });
+}
+
+function toggleFilter(key){
+  if(activeFilters.has(key)) activeFilters.delete(key); else activeFilters.add(key);
+  if(activeFilters.size === 0) GROUP_ORDER.forEach(k=>activeFilters.add(k));
+  renderLegend();
+  renderMain();
+}
+
+function groupData(){
+  const map = new Map();
+  systems.forEach(s=>{
+    if(!map.has(s.division)) map.set(s.division, new Map());
+    const svcMap = map.get(s.division);
+    if(!svcMap.has(s.serviceArea)) svcMap.set(s.serviceArea, []);
+    svcMap.get(s.serviceArea).push(s);
+  });
+  return map;
+}
+
+function renderMain(){
+  const main = document.getElementById('main');
+  main.innerHTML = '';
+  const grouped = groupData();
+  grouped.forEach((svcMap, divisionName)=>{
+    const divVisible = Array.from(svcMap.values()).some(list => list.some(s=>activeFilters.has(s.group)));
+    if(!divVisible) return;
+    const divEl = document.createElement('div');
+    divEl.className = 'division';
+    divEl.innerHTML = '<div class="division-head">'+divisionName+'</div>';
+    svcMap.forEach((list, serviceAreaName)=>{
+      const visible = list.filter(s=>activeFilters.has(s.group));
+      if(visible.length === 0) return;
+      const svcEl = document.createElement('div');
+      svcEl.className = 'service-area';
+      svcEl.innerHTML =
+        '<div class="service-area-head"><h2>'+serviceAreaName+'</h2><span class="service-area-count">'+visible.length+' of '+list.length+' shown</span></div>'+
+        '<div class="grid"></div>';
+      const grid = svcEl.querySelector('.grid');
+      visible.forEach(s=>{
+        const card = document.createElement('button');
+        card.className = 'card ' + s.group;
+        card.innerHTML =
+          '<div class="card-top"><div class="card-name">'+s.name+'</div>'+
+          '<span class="pill '+s.group+'">'+s.erpRelationship+'</span></div>'+
+          '<div class="card-vendor">'+s.vendor+'</div>'+
+          '<div class="card-planned">Planned: <span>'+s.planned+'</span></div>'+
+          (s.currentState === 'Planned' ? '<div class="card-tag">Not yet implemented</div>' : '');
+        card.onclick = () => openDrawer(s.id);
+        grid.appendChild(card);
+      });
+      divEl.appendChild(svcEl);
+    });
+    main.appendChild(divEl);
+  });
+}
+
+function openDrawer(id){
+  const s = appIndex[id];
+  if(!s) return;
+  const platformPeers = s.platform ? systems.filter(a => a.platform === s.platform && a.id !== s.id) : [];
+  const content = document.getElementById('drawerContent');
+  content.innerHTML =
+    '<div class="drawer-eyebrow">'+s.division+' &middot; '+s.serviceArea+'</div>'+
+    '<h3>'+s.name+'</h3>'+
+    '<div class="drawer-vendor">'+s.vendor+' &middot; '+s.capability+'</div>'+
+    '<div class="drawer-pill-row"><span class="pill '+s.group+'">'+s.erpRelationship+'</span>'+
+      (s.currentState === 'Planned' ? '<span class="card-tag" style="margin-top:0;">Not yet implemented</span>' : '')+'</div>'+
+    '<div class="planned-box"><strong>Planned / proposed</strong>'+s.planned+'</div>'+
+    '<dl>'+
+      '<div class="field"><dt>Business capability</dt><dd>'+s.capability+'</dd></div>'+
+      '<div class="field"><dt>Current state</dt><dd>'+s.currentState+'</dd></div>'+
+      '<div class="field"><dt>ERP relationship</dt><dd>'+s.erpRelationship+'</dd></div>'+
+      '<div class="field"><dt>Business owner</dt><dd>'+s.owner+'</dd></div>'+
+    '</dl>'+
+    '<p class="notes">'+s.notes+'</p>'+
+    (platformPeers.length ? '<div class="related-title">Same platform: '+s.platform+'</div>'+
+      platformPeers.map(p=>'<span class="chip" data-id="'+p.id+'">'+p.name+'</span>').join('') : '');
+
+  content.querySelectorAll('.chip').forEach(chip=>{
+    chip.onclick = () => openDrawer(chip.getAttribute('data-id'));
+  });
+
+  document.getElementById('drawer').classList.add('open');
+  document.getElementById('backdrop').classList.add('open');
+}
+
+function closeDrawer(){
+  document.getElementById('drawer').classList.remove('open');
+  document.getElementById('backdrop').classList.remove('open');
+}
+
+document.getElementById('drawerClose').onclick = closeDrawer;
+document.getElementById('backdrop').onclick = closeDrawer;
+document.addEventListener('keydown', e => { if(e.key === 'Escape') closeDrawer(); });
+
+renderBanner();
+renderLegend();
+renderMain();
+</script>
+</body>
+</html>
